@@ -1,0 +1,78 @@
+﻿@model HajurkoCarRental.Models.Damage
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div>
+    <div class=" p-3">
+        <div>
+            <form asp-action="Edit">
+                <div class=" pb-2">
+
+                    <h1 class="text-primary">Edit Damage Status</h1>
+                    <hr />
+
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="CarId" class="control-label"></label>
+                    <select asp-for="CarId" class="form-control" asp-items="ViewBag.CarId"></select>
+                    <span asp-validation-for="CarId" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <label asp-for="RepairCost" class="control-label">Repair Cost</label>
+                    <input required asp-for="RepairCost" class="form-control" />
+                    <span asp-validation-for="RepairCost" class="text-danger"></span>
+                </div>
+
+                <br />
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Paid" /> Paid
+                    </label>
+                </div>
+                <br />
+
+                <div class="d-flex align-items-center gap-3">
+                    <button type="submit" class=" btn btn-primary flex-grow-1">
+                        <span>
+                            <i class="bi bi-save-fill"></i>
+                        </span>
+                        <span>Update</span>
+                    </button>
+                    <a class="btn btn-icon btn-secondary flex-grow-1" asp-action="Index">
+                        <span>
+                            <i class="bi bi-backspace-fill"></i>
+                        </span>
+                        <span>
+                            Back To List
+                        </span>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

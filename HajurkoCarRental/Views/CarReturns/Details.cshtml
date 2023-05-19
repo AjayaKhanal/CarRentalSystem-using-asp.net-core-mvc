@@ -1,0 +1,68 @@
+﻿@model HajurkoCarRental.Models.CarReturn
+
+@{
+    ViewData["Title"] = "Return Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="p-3 mt-4 ">
+    <div>
+        <h1 class="text-primary pb-2 ">Return Car</h1>
+        <hr />
+        <dl class="row fs-5">
+            <div class="custom-two-grid">
+                <dt>
+                    @Html.DisplayNameFor(model => model.RentalRequest)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.RentalRequest.Id)
+                </dd>
+            </div>
+
+            <div class="custom-two-grid">
+                <dt>
+                    @Html.DisplayNameFor(model => model.FuelLevel)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.FuelLevel)
+                </dd>
+            </div>
+
+            <div class="custom-two-grid">
+                <dt>
+                    @Html.DisplayNameFor(model => model.IsDamaged)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.IsDamaged)
+                </dd>
+            </div>
+
+            <div class="custom-two-grid">
+                <dt>
+                    @Html.DisplayNameFor(model => model.ReturnDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.ReturnDate)
+                </dd>
+            </div>
+
+        </dl>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-primary btn-icon flex-grow-1" asp-action="Edit" asp-route-id="@Model?.Id">
+            <span>
+                <i class="bi bi-pencil-square"></i>
+            </span>
+            <span>Edit</span>
+        </a>
+        <a class="flex-grow-1 btn btn-secondary btn-icon" asp-action="Index">
+            <span>
+                <i class="bi bi-backspace-fill"></i>
+            </span>
+            <span>
+                Back To List
+
+            </span>
+        </a>
+    </div>
+</div>

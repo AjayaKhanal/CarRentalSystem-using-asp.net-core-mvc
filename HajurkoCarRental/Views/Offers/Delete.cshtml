@@ -1,0 +1,49 @@
+﻿@model HajurkoCarRental.Models.Offer
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class=" p-4 mt-4 ">
+
+    <h1 class="text-primary">Are you sure you want to delete  @Html.DisplayFor(model => model.Title)?</h1>
+    <div>
+        <hr />
+        <dl class="row fs-5">
+            <div class="custom-two-grid">
+                <dt>
+
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+            </div>
+
+            <div class="custom-two-grid">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+            </div>
+
+            <div class="custom-two-grid">
+                <dt>
+                    @Html.DisplayNameFor(model => model.CreatedDateTime)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.CreatedDateTime)
+                </dd>
+            </div>
+        </dl>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn w-150 btn-danger" /> &nbsp;
+            <a class="btn btn-secondary w-150 " asp-action="Index">Back to List</a>
+        </form>
+    </div>
+
+</div>

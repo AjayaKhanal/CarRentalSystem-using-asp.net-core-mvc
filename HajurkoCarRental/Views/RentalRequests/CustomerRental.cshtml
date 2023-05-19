@@ -1,0 +1,98 @@
+﻿@model IEnumerable<HajurkoCarRental.Models.RentalRequest>
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Manage Rental Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+    <h4 style="line-height:1.5;">
+        <span>Rental History of @ViewBag.UserDetail.FullName </span>
+    </h4>
+
+</div>
+<table class="table align-middle mb-0 mt-4">
+    <thead>
+        <tr>
+            @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.User)
+                </th>
+            }
+            <th>
+                Date
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Car)
+            </th>
+            <th>
+                Authorized By
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Approved)
+            </th>
+            <th>
+                Amount (Rs.)
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+                {
+                    <th style="line-height:1.8;">
+                        <div class="d-flex align-items-center">
+                            @if (item.User.Picture != null)
+                            {
+
+                                <img style="width:45px;height:45px; object-fit:cover; border-radius:50%;" src="data:image/*;base64,@(Convert.ToBase64String(item.User.Picture))">
+                            }
+                            else
+                            {
+                                <img style="width:45px;height:45px; object-fit:cover;border-radius:50%;" src="http://surl.li/gtezq" />
+                            }
+                            <div class="ms-3">
+                                <p class="fw-bold mb-1">@item.User.FullName</p>
+                            </div>
+                        </div>
+                    </th>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.RequestDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Car.Brand)
+                </td>
+                <th>
+                    @if (item.AuthorizedBy != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.AuthorizedBy.FullName)
+                    }
+                </th>
+                <td>
+                    @if (item.Approved)
+                    {
+                        <p class="text-success">Yes</p>
+                    }
+                    else
+                    {
+                        <p class="text-danger">No</p>
+                    }
+                </td>
+                <td style="font-weight:bold;font-size:120%;">
+                    Rs. @Html.DisplayFor(modelItem => item.Charge)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

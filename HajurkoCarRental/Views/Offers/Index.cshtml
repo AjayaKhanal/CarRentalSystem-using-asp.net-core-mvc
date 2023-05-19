@@ -1,0 +1,72 @@
+﻿@model IEnumerable<HajurkoCarRental.Models.Offer>
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Browse Offers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+    <h1 class="text-primary">View Offers</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+        {
+
+            <a asp-controller="Offers" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> &nbsp; Create Offer</a>
+
+        }
+    }
+
+</div>
+
+<div class="custom-grid">
+    @foreach (var item in Model)
+    {
+        <div class=" position-relative offer p-4 rounded-3 bg-dark">
+            <div>
+                <div>
+                    <h5>
+                        <a asp-route-id="@item.Id" class="text-decoration-none fw-bolder fs-4 text-primary" asp-action="Details">@Html.DisplayFor(modelItem => item.Title)</a>
+                    </h5>
+                </div>
+                <div>
+                    <p class="rotate">@Html.DisplayFor(modelItem => item.CreatedDateTime)</p>
+                    <p>@Html.DisplayFor(modelItem => item.Description)</p>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+                        {
+                            <div class="d-flex align-items-center gap-2">
+                                <a class="btn btn-primary btn-icon flex-grow-1 " asp-action="Edit" asp-route-id="@item.Id">
+                                    <span>
+                                        <i class="bi bi-pencil-square"></i>
+                                    </span>
+                                    <span>
+                                        Edit
+                                    </span>
+                                </a>
+                                <a class="btn btn-danger btn-icon flex-grow-1" asp-action="Delete" asp-route-id="@item.Id">
+                                    <span>
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </span>
+                                    <span>
+                                        Delete
+                                    </span>
+                                </a>
+                            </div>
+                        }
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+    }
+
+</div>

@@ -1,0 +1,97 @@
+﻿@model HajurkoCarRental.Models.RentalRequest
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Edit Car Rental";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="p-3 mt-4">
+    <div>
+        <form asp-action="Edit">
+            <div>
+
+                <h1 class="text-primary pb-2">Edit Car Rental</h1>
+                <hr />
+
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CarId" class="control-label"></label>
+                <select disabled="true" asp-for="CarId" class="form-control" asp-items="ViewBag.CarId"></select>
+                <span asp-validation-for="CarId" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="Charge" class="control-label"></label>
+                <input readonly="true" asp-for="Charge" class="form-control" />
+                <span asp-validation-for="Charge" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="RequestDate" class="control-label"></label>
+                <input readonly="true" asp-for="RequestDate" class="form-control" />
+                <span asp-validation-for="RequestDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="ReturnDate" class="control-label"></label>
+                <input readonly="true" asp-for="ReturnDate" class="form-control" />
+                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="d-flex justify-content-between">
+                @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+                {
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Approved" /> @Html.DisplayNameFor(model => model.Approved)
+                        </label>
+                    </div>
+                }
+
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Cancelled" /> @Html.DisplayNameFor(model => model.Cancelled)
+                    </label>
+                </div>
+            </div>
+            <br />
+            <div class="d-flex align-items-center gap-2">
+                <button type="submit" value="Save" class="btn btn-primary w-150 ">
+                    Submit
+                </button>
+                <a class="btn btn-icon btn-secondary w-150" asp-action="Index">Back to List</a>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        if ($("#Cancelled").is(":checked")) {
+            $("#Cancelled").attr("disabled", true);
+        }
+
+        var originalRate = $("#Charge").val();
+        $("#Cancelled").on("change", function () {
+            if ($(this).is(":checked")) {
+                $("#Charge").val("0");
+            } else {
+                $("#Charge").val(originalRate);
+            }
+        });
+    </script>
+}

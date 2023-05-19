@@ -1,0 +1,85 @@
+﻿@model IEnumerable<HajurkoCarRental.Models.Car>
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div>
+        <form class="d-flex  gap-2">
+            <input name="search" class="search-input flex-grow-1 rounded-2" value="@ViewBag.Search" type="text" placeholder="Search for Cars" />
+            <button type="submit" class="btn btn-primary custom-btn w-150 btn-icon">
+                <span>
+                    <i class="bi bi-search"></i>
+                </span>
+                <span>
+                    Search
+                </span>
+            </button>
+        </form>
+    </div>
+</div>
+
+
+
+@if (ViewBag.Search != null && ViewBag.Search != "")
+{
+    <h3 class="text-secondary fs-5 mt-1">Search results for "@ViewBag.Search"</h3>
+}
+
+@if (Model.Count() > 0)
+{
+    <div class="custom-grid">
+        @foreach (var item in Model)
+        {
+            <div class="card p-3 animate-up">
+                <figure style="height:150px;" class="card-img-top rounded-2 overflow-hidden">
+                    <img style="width:100%;height:100%; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(item.Picture))">
+                </figure>
+                <div>
+                    <h5 class="card-title">
+                        @item.Brand - @item.Model
+                    </h5>
+                    <p class="card-text">@item.Description</p>
+                    <a class="btn btn-primary w-100" asp-action="Details" asp-controller="Cars" asp-route-id="@item.Id">Details</a>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h1 class="text-center mt-4 text-danger fs-4">
+        Not Results Found!!
+    </h1>
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+    {
+        <a asp-controller="Cars" asp-action="Create" class="add-car bg-primary d-flex align-items-center justify-content-center">    <i class="bi bi-car-front-fill text-white fs-3"></i> </a>
+    }
+
+}
+
+
+
+
+@section Scripts {
+    <script>
+        function goToBooking(id) {
+            console.log(id);
+            localStorage.setItem("selectedCar", id);
+            window.location.href = "/RentalRequests/Create";
+
+        }
+
+    </script>
+}

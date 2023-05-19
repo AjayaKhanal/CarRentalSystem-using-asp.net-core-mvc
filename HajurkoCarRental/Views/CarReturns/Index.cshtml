@@ -1,0 +1,78 @@
+﻿@model IEnumerable<HajurkoCarRental.Models.CarReturn>
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    ViewData["Title"] = "Car Rental Returns";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="table-container">
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+        <h3 class="">Manage Car Rental Returns</h3>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="CarReturns" asp-action="Create" class="btn btn-primary bg-dark border-0"><i class="bi bi-plus-circle"></i> &nbsp; Add Car Return</a>
+
+        }
+
+    </div>
+    <table class="table align-middle mb-0 mt-4">
+        <thead class="bg">
+            <tr>
+                <th>
+                    Rental Request
+                </th>
+                <th>
+                    Fuel Level
+                </th>
+                <th>
+                    Is Damaged
+                </th>
+                <th>
+                    Return Date
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        Request #@Html.DisplayFor(modelItem => item.RentalRequest.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FuelLevel) L
+                    </td>
+                    <td>
+                        @if (item.IsDamaged)
+                        {
+                            <p class="text-success">Yes</p>
+                        }
+                        else
+                        {
+                            <p class="text-danger">No</p>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReturnDate)
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pen"></i></a> &nbsp;&nbsp;
+                        @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+                        {
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+
+                        }
+                        &nbsp; &nbsp;
+                        <a class="btn btn-warning" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-list"></i></a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

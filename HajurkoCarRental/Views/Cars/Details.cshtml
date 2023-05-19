@@ -1,0 +1,89 @@
+﻿@using HajurkoCarRental.Areas.Identity.Data;
+@using Microsoft.AspNetCore.Identity;
+@model HajurkoCarRental.Models.Car
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Car Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<aside class="col-sm-7 detail-container d-flex">
+	<div class="detail-image-container">
+		<div class="detail-image">
+			@*<img src="https://cdn02.hamrobazaar.com/User/Posts/2023/3/29/ce57ae6d-11c0-4fd5-bbbf-0018d0cca740.webp?x-image-process=image/resize,m_lfit,h_500,w_500">*@
+            @if (Model.Picture != null)
+            {
+
+                <img width="200" src="data:image/*;base64,@(Convert.ToBase64String(Model.Picture))">
+            }
+        </div>
+	</div>
+	<article class="card-body detail-body p-5">
+		<h3 class="title mb-3">@Model.Brand | @Model.Model | @Model.Year.Year</h3>
+		<dl class="item-property">
+			<dt class="mt-2">Price</dt>
+			<dd>
+				<div class="d-flex flex-row align-items-center justify-content-left mb-1 py-2">
+					<h5 class="mb-1 me-1">@Model.RentalRate</h5>
+				</div>
+			</dd>
+		</dl>
+		<dl class="item-property">
+			<dt class="mb-2">Description</dt>
+			<dd>
+				<p>
+					@Model.Description
+                </p>
+			</dd>
+		</dl>
+		<dl class="param param-feature">
+			<dt>Model</dt>
+			<dd>@Model.Model</dd>
+		</dl>  <!-- item-property-hor .// -->
+		<dl class="param param-feature">
+			<dt>Color</dt>
+			<dd>@Model.Color</dd>
+		</dl>  <!-- item-property-hor .// -->
+		
+		
+        @if (Model.IsAvailable)
+        {
+            <a class="btn btn-lg w-50 btn-outline-primary text-uppercase my-4" asp-controller="RentalRequests" asp-action="Create" asp-route-carId="@Model.Id"><i class="fas fa-shopping-cart">Rent</i></a>
+        }
+        else
+        {
+            <a class="btn btn-lg w-50 btn-outline-primary text-uppercase my-4" disabled>Car not available </a>
+        }
+
+        
+        @if (User.Identity.IsAuthenticated)
+        {
+            @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+            {
+                <hr>
+                <div class="d-flex mt-3 justify-content-between">
+                    <a class="btn btn-info" asp-controller="Cars" asp-action="Edit" asp-route-id="@Model.Id">Edit This Car</a>
+                    <a class="btn btn-danger" asp-controller="Cars" asp-action="Delete" asp-route-id="@Model.Id">Delete This Car</a>
+                </div>
+            }
+        }
+
+	</article> <!-- card-body.// -->
+</aside> <!-- col.// -->
+
+
+
+@section Scripts {
+    <script>
+        function goToBooking(id) {
+            console.log(id);
+            localStorage.setItem("selectedCar", id);
+            window.location.href = "/RentalRequests/Create";
+
+        }
+
+    </script>
+}
+

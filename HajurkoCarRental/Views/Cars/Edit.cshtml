@@ -1,0 +1,94 @@
+﻿@model HajurkoCarRental.Models.Car
+
+@{
+    ViewData["Title"] = "Edit Car";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="p-3 mt-4 ">
+    <div>
+        <form asp-action="Edit" enctype="multipart/form-data" method="post">
+            <div>
+                <h1 class="text-primary pb-2">Edit Car Details</h1>
+                <hr />
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Brand" class="control-label"></label>
+                <input asp-for="Brand" class="form-control" />
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="Model" class="control-label"></label>
+                <input asp-for="Model" class="form-control" />
+                <span asp-validation-for="Model" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="PlateNumber" class="control-label"></label>
+                <input asp-for="PlateNumber" class="form-control" />
+                <span asp-validation-for="PlateNumber" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" placeholder="Enter a Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <label asp-for="Color" class="control-label"></label>
+                <input asp-for="Color" placeholder="Enter a PlateNumber" class="form-control" />
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <label asp-for="Year" class="control-label"></label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <label asp-for="RentalRate" class="control-label"></label>
+                <input asp-for="RentalRate" class="form-control" />
+                <span asp-validation-for="RentalRate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                @if (Model.Picture != null)
+                {
+
+                    <img id="Picture" class="w-50" src="data:image/*;base64,@(Convert.ToBase64String(Model.Picture))">
+
+                }
+                <br />
+
+                <label asp-for="Picture" class="control-label mt-2"></label>
+                <input type="file"
+                       accept=".png,.jpg,.jpeg,.gif,.tif"
+                       asp-for="Picture"
+                       class="form-control mt-1"
+                       onchange="document.getElementById('Picture').src = window.URL.createObjectURL(this.files[0])" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <br />
+            <br />
+
+            <div>
+                <button type="submit" value="Save" class="btn w-150 btn-primary">Save</button>
+                <a class="btn btn-secondary w-150" asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

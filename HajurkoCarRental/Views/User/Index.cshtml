@@ -1,0 +1,107 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+<div class="table-container">
+    <br />
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="">Manage Users</h3>
+    @if (UserManager.GetUserAsync(User).Result.Role == "Admin")
+    {
+
+        <a asp-controller="User" asp-action="Create" class="btn btn-primary bg-dark border-0"><i class="bi bi-plus-circle"></i> &nbsp; Add New User</a>
+
+    }
+    </div>
+
+    <table class="table align-middle mb-0 mt-4">
+        <thead class="bg">
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+                        @foreach(var obj in Model)
+            {
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                            @if (obj.Picture != null)
+                            {
+                               
+                            <img style="width:45px;height:45px; object-fit:cover; border-radius:50%;" src="data:image/*;base64,@(Convert.ToBase64String(obj.Picture))">
+                            }
+                            else
+                            {
+                                <img style="width:45px;height:45px; object-fit:cover;border-radius:50%;" src="http://surl.li/gtezq">
+                            }
+                        <div class="ms-3">
+                                <p class="fw-bold mb-1">@obj.FullName</p>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    @if (obj.Role == "Admin")
+                    {
+                        <span class="admin custom-badge">@obj.Role</span>
+                    }
+                    @if (obj.Role == "Staff")
+
+                    {
+                        <span class="staff custom-badge">@obj.Role</span>
+                    }
+                    @if (obj.Role == "Customer")
+                    {
+                        <span class="customer custom-badge">@obj.Role</span>
+                    }
+                </td>
+                <td>
+                    @obj.PhoneNumber
+                </td>
+                    <td>@obj.Email</td>
+                <td class="">
+
+                    @if (UserManager.GetUserAsync(User).Result.Role != "Staff")
+                    {
+                        <a asp-controller="User" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary btn-sm"><i class="bi bi-pencil"></i></a>
+
+
+                    }
+
+                    @if (UserManager.GetUserAsync(User).Result.Role == "Staff" && obj.Role == "Customer")
+                    {
+
+                        <a asp-controller="User" asp-action="ChangePassword" asp-route-id="@obj.Id" class="btn btn-success btn-sm">Change Password</a>
+
+                    }
+                    @if (UserManager.GetUserAsync(User).Result.Role == "Admin")
+                    {
+
+                        <a asp-controller="User" asp-action="ChangePassword" asp-route-id="@obj.Id" class="btn btn-success btn-sm"><i class="bi bi-pass-fill"></i></a>
+
+                    }
+                    <a asp-action="CustomerRental" asp-controller="RentalRequests" class="btn btn-secondary btn-sm" asp-route-id="@obj.Id"><i class="bi bi-clock-history"></i></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

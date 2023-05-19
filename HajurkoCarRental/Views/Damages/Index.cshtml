@@ -1,0 +1,156 @@
+﻿@model IEnumerable<HajurkoCarRental.Models.Damage>
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Manage Damages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="table-container">
+
+    <br />
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+        <h3 class="">Manage Damages</h3>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Damages" asp-action="Create" class="btn btn-primary bg-dark border-0"><i class="bi bi-plus-circle"></i> &nbsp; Submit Damage</a>
+
+        }
+
+    </div>
+
+    <table class="table align-middle mb-0 mt-4">
+        <thead class="bg">
+            <tr>
+
+                <th>User</th>
+                <th>Item ID</th>
+                <th>Car</th>
+                <th>Description</th>
+                <th>Repair Cost</th>
+                <th>Amount Paid</th>
+                <th>Actions</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model)
+            {
+                <tr>
+
+                    <td>
+                        <div class="d-flex align-items-center">
+                            @if (obj.User.Picture != null)
+                            {
+
+                                <img style="width:45px;height:45px; object-fit:cover; border-radius:50%;" src="data:image/*;base64,@(Convert.ToBase64String(obj.User.Picture))">
+                            }
+                            else
+                            {
+                                <img style="width:45px;height:45px; object-fit:cover;border-radius:50%;" src="http://surl.li/gtezq" />
+                            }
+                            <div class="ms-3">
+                                <p class="fw-bold mb-1">@obj.User.FullName</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="fw-bold mb-1">@obj.Id</p>
+                    </td>
+                    <td>
+                        @obj.Car.Brand
+                    </td>
+                    <td>@obj.Description</td>
+                    <td>
+                        @if (obj.RepairCost != null)
+                        {
+                            <span>Rs.</span>
+
+                            @Html.DisplayFor(modelItem => obj.RepairCost)
+                        }
+                        else
+                        {
+                            <span>---</span>
+                        }
+                    </td>
+                    <td>
+                        @if (obj.Paid)
+                        {
+                            <i style="font-weight:800;" class="bi bi-check-lg text-success"></i>
+                        }
+                        else
+                        {
+                            <i style="font-weight:800;" class="bi bi-x-lg text-danger"></i>
+                        }
+                    </td>
+                    <td>
+                        @if (UserManager.GetUserAsync(User).Result.Id == obj.UserId)
+                        {
+                            @if (obj.RepairCost != null)
+                            {
+                                if (obj.Paid == false)
+                                {
+                                    <a class="btn btn-primary" style="background:#5C2D91;border:none;" onclick="payWithKhalti(@obj.Id, @obj.RepairCost)">Pay by Khalti</a>
+
+                                }
+
+                            }
+                        }
+
+                    </td>
+                    <td class="">
+                        <a asp-action="Details" class="btn btn-secondary" asp-route-id="@obj.Id"><i class="bi bi-list-check"></i></a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+                            {
+                                <a asp-action="Edit" class="btn btn-primary" asp-route-id="@obj.Id"><i class="bi bi-pen"></i></a>
+                                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@obj.Id"><i class="bi bi-trash"></i></a>
+
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+
+
+    function payWithKhalti(id, amount) {
+        var config = {
+            // test public key
+            "publicKey": "test_public_key_c9ab763c800e4c9ab73e736bb46f56eb",
+            "productIdentity": id,
+            "productName": "Damage",
+            "productUrl": "https://iic.edu.np",
+            "paymentPreference": [
+                "KHALTI",
+            ],
+            "eventHandler": {
+                onSuccess(payload) {
+                    // hit merchant api for initiating verfication
+                    console.log(payload);
+                    window.location.href = `/Damages/Payment/${id}`;
+                },
+                onError(error) {
+                    console.log(error);
+                    alert("Some error occured in the payment, please try again!");
+                },
+                onClose() {
+                    console.log('widget is closing');
+                }
+            }
+        };
+        var checkout = new KhaltiCheckout(config);
+        checkout.show({ amount: amount * 100 });
+    }
+
+</script>

@@ -1,0 +1,108 @@
+﻿@model HajurkoCarRental.Models.Damage
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Damage Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mt-4 p-3">
+
+    <div>
+        <h1 class="">Damage Details of @Html.DisplayFor(model=>model.Car.Brand)</h1>
+        <hr />
+        <div class="two-grid">
+            <dl class="row fs-4">
+                <div class="custom-two-grid">
+                    <div>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </div>
+                    <div>
+                        @Html.DisplayFor(model => model.Description)
+                    </div>
+                </div>
+
+
+                <div class="custom-two-grid">
+                    <div>
+                        Repair Cost
+                    </div>
+                    <div>
+                        @if (Model.RepairCost != null)
+                        {
+                            <span>Rs.</span> @Html.DisplayFor(model => model.RepairCost)
+                        }
+                        else
+                        {
+                            <span>---</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="custom-two-grid">
+                    <div>
+                        @Html.DisplayNameFor(model => model.Car)
+                    </div>
+                    <div>
+                        @Html.DisplayFor(model => model.Car.Brand)
+                    </div>
+                </div>
+
+                <div class="custom-two-grid">
+                    <div>
+                        UserName
+                    </div>
+                    <div>
+                        @Html.DisplayFor(model => model.User.FullName)
+
+                    </div>
+                </div>
+
+
+                <div class="custom-two-grid">
+                    <div>
+                        @Html.DisplayNameFor(model => model.Paid) Status
+                    </div>
+                    <div>
+                        @*@Html.DisplayFor(model => model.Paid)*@
+                        @if (Model.Paid == true)
+                        {
+                            <p class="text-success">Paid</p>
+                        }
+                        else
+                        {
+                            <p class="text-danger">Not paid</p>
+                        }
+                    </div>
+                </div>
+
+            </dl>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-3 mt-4">
+        @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+        {
+            <a asp-action="Edit" class="flex-grow-1 btn btn-primary btn-icon w-150" asp-route-id="@Model.Id">
+                <span>
+                    <i class="bi bi-pencil-square"></i>
+                </span>
+                <span>
+                    Edit
+                </span>
+            </a>
+
+        }
+        <a asp-action="Index" class="flex-grow-1 btn btn-secondary btn-icon w-150">
+            <span>
+                <i class="bi bi-backspace-fill"></i>
+            </span>
+            <span>
+                Back to List
+            </span>
+        </a>
+    </div>
+</div>

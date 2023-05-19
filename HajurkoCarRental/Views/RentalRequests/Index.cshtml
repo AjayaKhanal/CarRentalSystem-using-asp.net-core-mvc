@@ -1,0 +1,120 @@
+﻿@model IEnumerable<HajurkoCarRental.Models.RentalRequest>
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Manage Rental Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="table-container">
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+        <h3 class="">Manage Rental Requests</h3>
+
+    </div>
+    <table class="table align-middle mb-0 mt-4">
+        <thead class="bg">
+            <tr>
+                @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.User)
+                    </th>
+                }
+                <th>
+                    @Html.DisplayNameFor(model => model.Car)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Charge)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RequestDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReturnDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Approved)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cancelled)
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
+                    {
+                        <th>
+                            <div class="d-flex align-items-center">
+                                @if (item.User.Picture != null)
+                                {
+
+                                    <img style="width:45px;height:45px; object-fit:cover; border-radius:50%;" src="data:image/*;base64,@(Convert.ToBase64String(item.User.Picture))">
+                                }
+                                else
+                                {
+                                    <img style="width:45px;height:45px; object-fit:cover;border-radius:50%;" src="http://surl.li/gtezq">
+                                }
+                                <div class="ms-3">
+                                    <p class="fw-bold mb-1">@item.User.FullName</p>
+                                </div>
+                            </div>
+                        </th>
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Car.Brand)
+                    </td>
+                    <td>
+                        Rs. @Html.DisplayFor(modelItem => item.Charge)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReturnDate)
+                    </td>
+                    <td>
+                        @if (item.Approved)
+                        {
+
+                            <p>Yes</p>
+                        }
+                        else
+                        {
+
+                            <p>No</p>
+                        }
+                    </td>
+                    <td>
+                        @if (item.Cancelled)
+                        {
+
+                            <p>Yes</p>
+                        }
+                        else
+                        {
+
+                            <p>No</p>
+                        }
+                    </td>
+
+                    <td>
+                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                        @if (UserManager.GetUserAsync(User).Result.Role == "Admin")
+                        {
+
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

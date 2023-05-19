@@ -1,0 +1,86 @@
+﻿@model HajurkoCarRental.Controllers.UserController.UserModel
+
+@{
+    ViewData["Title"] = "Add New User";
+}
+
+<br />
+<div>
+
+    <div>
+        <form method="post">
+            <div class=" p-4 mt-4">
+                <div>
+                    <h1 class="text-primary">Add User</h1>
+                    <hr />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="FullName"></label>
+                    <input asp-for="FullName" placeholder="Enter a Full Name..." class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" placeholder="Enter an email Address" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Address"></label>
+                    <input asp-for="Address" placeholder="Enter an address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" placeholder="Enter an PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Role"></label>
+                    <select class="form-select" asp-for="Role">
+                        <option value="Admin">Admin</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Customer">Customer</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" placeholder="Enter a password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check mb-3">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="RegularCustomer" /> Regular Customer
+                    </label>
+                </div>
+                <div class="d-flex gap-3 ">
+                    <button type="submit" class="btn btn-icon btn-primary flex-grow-1 ">
+                        <span>
+                            <i class="bi bi-plus-circle"></i>
+                        </span>
+                        <span>
+                            Add User
+                        </span>
+                    </button>
+                    <a class="btn btn-secondary btn-icon flex-grow-1" asp-action="Index">
+                        <span>
+                            <i class="bi bi-backspace-fill"></i>
+                        </span>
+                        <span>
+                            Back To List
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+Write to Aayush Karki

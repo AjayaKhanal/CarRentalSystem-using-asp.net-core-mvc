@@ -1,0 +1,131 @@
+﻿@model IEnumerable<HajurkoCarRental.Models.RentalRequest>
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Manage Rental Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mb-3 mt-3">
+    <h4 style="line-height:1.5;">
+        @if (ViewBag.From == "" && ViewBag.Upto == "" || ViewBag.From == null && ViewBag.Upto == null)
+        {
+            <span class="mb-3">Showing All Sales Report</span>
+        }
+        else
+        {
+            <span>
+                Sales @if (ViewBag.From != "")
+                {
+                    <span>from @ViewBag.From</span>
+                }
+
+                @if (ViewBag.Upto != "")
+                {
+                    <span>
+                        upto @ViewBag.Upto
+                    </span>
+                }
+
+            </span>
+        }
+
+    </h4>
+
+    <form class="d-flex align-items-end my-2">
+        
+        <div>
+            From <input class="form-control" type="date" name="from" />
+        </div>
+        &nbsp;&nbsp;
+        <div>
+            Upto <input class="form-control" type="date" name="upto" />
+        </div>
+        <div>
+            &nbsp;&nbsp;
+            <button type="submit" class="btn btn-primary btn-icon ml-2 d-inline-block">
+                <span>
+                    <i class="bi bi-funnel"></i>
+
+                </span>
+                <span>
+                    Filter
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+<table class="table align-middle mb-0 mt-4">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>
+                Date
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Car)
+            </th>
+            <th>
+                Authorized By
+            </th>
+            <th>
+                Amount (Rs.)
+            </th>
+            <th>Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    <div class="d-flex align-items-center">
+                        @if (item.User.Picture != null)
+                        {
+
+                            <img style="width:45px;height:45px; object-fit:cover; border-radius:50%;" src="data:image/*;base64,@(Convert.ToBase64String(item.User.Picture))">
+                        }
+                        else
+                        {
+                            <img style="width:45px;height:45px; object-fit:cover;border-radius:50%;" src="http://surl.li/gtezq">
+                        }
+                        <div class="ms-3">
+                            <p class="fw-bold mb-1">@item.User.FullName</p>
+                        </div>
+                    </div>
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RequestDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Car.Brand)
+                </td>
+                <th>
+                    @if (item.AuthorizedBy != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.AuthorizedBy.FullName)
+                    }
+                </th>
+                <td style="font-weight:bold;font-size:120%;">
+                    Rs. @Html.DisplayFor(modelItem => item.Charge)
+                </td>
+                <td><a asp-action="CustomerRental" asp-controller="RentalRequests" asp-route-id="@item.UserId"><i class="bi bi-eye"></i></a></td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<br />
+<div class="total-container " style="margin-left:auto">
+    <div class="total">
+        Total: <b class="text-primary">Rs. @ViewBag.Total</b>
+    </div>
+</div>

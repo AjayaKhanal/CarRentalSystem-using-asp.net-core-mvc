@@ -1,0 +1,78 @@
+﻿@model HajurkoCarRental.Areas.Identity.Data.User
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<br />
+<div class=" mt-2 px-3">
+    <div>
+        <form method="post">
+            <div>
+                <div>
+                    <h1 class="text-primary pb-2">Edit User Details</h1>
+                    <hr />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="FullName"></label>
+                    <input required asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email"></label>
+                    <input readonly asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Address"></label>
+                    <input required asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber"></label>
+                    <input required asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Role"></label>
+                    <select class="form-select" asp-for="Role">
+                        <option value="Admin">Admin</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Customer">Customer</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <div class="form-group form-check mb-3">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="RegularCustomer" /> Regular Customer
+                    </label>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button type="submit" class="flex-grow-1 btn-icon btn btn-primary">
+                        <span>
+                            <i class="bi bi-pencil-square"></i>
+                        </span>
+                        <span>
+                            Edit
+                        </span>
+                    </button>
+                    <a class="btn btn-icon btn-secondary flex-grow-1" asp-action="Index">
+                        <span>
+                            <i class="bi bi-backspace-fill"></i>
+                        </span>
+                        <span>
+                            Back To List
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,70 @@
+﻿@model HajurkoCarRental.Models.CarReturn
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="border border-primary p-3 mt-4">
+    <h1 class="text-primary pb-2">Are you sure you want to delete this return record?</h1>
+    <hr />
+    <dl class="row fs-5">
+        <div class="custom-two-grid">
+            <dt>
+                @Html.DisplayNameFor(model => model.RentalRequest)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.RentalRequest.Id)
+            </dd>
+        </div>
+
+        <div class="custom-two-grid">
+            <dt>
+                @Html.DisplayNameFor(model => model.FuelLevel)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.FuelLevel)
+            </dd>
+        </div>
+
+        <div class="custom-two-grid">
+            <dt>
+                @Html.DisplayNameFor(model => model.IsDamaged)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.IsDamaged)
+            </dd>
+        </div>
+
+        <div class="custom-two-grid">
+            <dt>
+                @Html.DisplayNameFor(model => model.ReturnDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ReturnDate)
+            </dd>
+        </div>
+    </dl>
+
+    <form class="d-flex align-items-center gap-2" asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn flex-grow-1 btn-icon btn-danger">
+            <span>
+                <i class="bi bi-trash3-fill"></i>
+            </span>
+            <span>
+                Delete
+
+            </span>
+        </button>
+        <a class="flex-grow-1 btn btn-secondary btn-icon" asp-action="Index">
+            <span>
+                <i class="bi bi-backspace-fill"></i>
+            </span>
+            <span>
+                Back to List
+            </span>
+        </a>
+    </form>
+</div>

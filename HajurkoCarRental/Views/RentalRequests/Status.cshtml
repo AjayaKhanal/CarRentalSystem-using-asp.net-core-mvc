@@ -1,0 +1,135 @@
+﻿
+@using Microsoft.AspNetCore.Identity
+@using HajurkoCarRental.Areas.Identity.Data
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Car Status Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+    <h3 class="">Car Status Report</h3>
+
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" data-bs-toggle="tab" href="#rent" aria-selected="true" role="tab">
+            Cars Currently on Rent
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#available" aria-selected="false" tabindex="-1" role="tab">
+            Cars Currently Available
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#frequent" aria-selected="false" tabindex="-1" role="tab">
+            Frequently Rented Cars
+        </a>
+    </li>
+
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" data-bs-toggle="tab" href="#not" aria-selected="false" tabindex="-1" role="tab">
+            Not Rented Cars
+        </a>
+    </li>
+
+
+</ul>
+<div id="myTabContent" class="tab-content">
+    <br />
+
+    <div class="tab-pane fade show active" id="rent" role="tabpanel">
+        <p class="mb-3">These cars are currently on rent & is not available.</p>
+        <div class="custom-grid">
+            @foreach (var item in ViewBag.OnRentCars)
+            {
+                <div class="card p-3 animate-up">
+                    <figure style="height:150px;" class="card-img-top rounded-2 overflow-hidden">
+                        <img style="width:100%;height:100%; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(item.Picture))">
+                    </figure>
+                    <div>
+                        <h5 class="card-title">
+                            @item.Brand - @item.Model
+                        </h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a class="btn btn-primary w-100" asp-action="Details" asp-controller="Cars" asp-route-id="@item.Id">Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+    <div class="tab-pane fade" id="available" role="tabpanel">
+        <p class="mb-3">These cars are not on rent & is available for renting.</p>
+
+        <div class="custom-grid">
+            @foreach (var item in ViewBag.AvailableCars)
+            {
+                <div class="card p-3 animate-up">
+                    <figure style="height:150px;" class="card-img-top rounded-2 overflow-hidden">
+                        <img style="width:100%;height:100%; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(item.Picture))">
+                    </figure>
+                    <div>
+                        <h5 class="card-title">
+                            @item.Brand - @item.Model
+                        </h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a class="btn btn-primary w-100" asp-action="Details" asp-controller="Cars" asp-route-id="@item.Id">Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+        
+    </div>
+    <div class="tab-pane fade" id="frequent" role="tabpanel">
+        <p class="mb-3">These cars have been rented more than or equal to 3 times with approval.</p>
+
+
+        <div class="custom-grid">
+            @foreach (var item in ViewBag.FrequentCars)
+            {
+                <div class="card p-3 animate-up">
+                    <figure style="height:150px;" class="card-img-top rounded-2 overflow-hidden">
+                        <img style="width:100%;height:100%; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(item.Picture))">
+                    </figure>
+                    <div>
+                        <h5 class="card-title">
+                            @item.Brand - @item.Model
+                        </h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a class="btn btn-primary w-100" asp-action="Details" asp-controller="Cars" asp-route-id="@item.Id">Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        </div>
+    <div class="tab-pane fade" id="not" role="tabpanel">
+        <p class="mb-3">These cars haven't been rented yet!</p>
+
+
+        <div class="custom-grid">
+            @foreach (var item in ViewBag.NotRentedCars)
+            {
+                <div class="card p-3 animate-up">
+                    <figure style="height:150px;" class="card-img-top rounded-2 overflow-hidden">
+                        <img style="width:100%;height:100%; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(item.Picture))">
+                    </figure>
+                    <div>
+                        <h5 class="card-title">
+                            @item.Brand - @item.Model
+                        </h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a class="btn btn-primary w-100" asp-action="Details" asp-controller="Cars" asp-route-id="@item.Id">Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+        
+    </div>
+</div>

@@ -1,0 +1,70 @@
+﻿@model HajurkoCarRental.Models.Car
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div className="p-3">
+    <h4 class="text-primary">
+        Are you want to delete this Car named  @Html.DisplayFor(model => model.Brand)
+    </h4>
+    <hr>
+    <div class="delete-grid">
+        <div class="delete-img-grid">
+            @if (Model.Picture != null)
+            {
+
+                <img style="width:100%;height:100%; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(Model.Picture))">
+            }
+        </div>
+        <dl class="bg-danger fs-4">
+            <div>
+                @Html.DisplayNameFor(model => model.Brand) :
+                @Html.DisplayFor(model => model.Brand)
+            </div>
+            <div>
+                @Html.DisplayNameFor(model => model.Model):
+                @Html.DisplayFor(model => model.Model)
+            </div>
+
+            <div>
+                @Html.DisplayNameFor(model => model.PlateNumber):
+                @Html.DisplayFor(model => model.PlateNumber)
+            </div>
+            
+            <div>
+                @Html.DisplayNameFor(model => model.Description):
+                @Html.DisplayFor(model => model.Description)
+            </div>
+            
+            <div>
+                @Html.DisplayNameFor(model => model.Color):
+                @Html.DisplayFor(model => model.Color)
+            </div>
+            
+            <div>
+                @Html.DisplayNameFor(model => model.Year):
+                @Html.DisplayFor(model => model.Year)
+            </div>
+
+            <div>
+                @Html.DisplayNameFor(model => model.RentalRate):
+                @Html.DisplayFor(model => model.RentalRate)
+            </div>
+
+            <div>
+                @Html.DisplayNameFor(model => model.IsAvailable):
+                @Html.DisplayFor(model => model.IsAvailable)
+            </div>
+
+
+        </dl>
+    </div>
+    <form asp-action="Delete" class="mt-4">
+        <input type="hidden" asp-for="Id" />
+        <input style="width:150px;" type="submit" value="Delete" class="btn btn-danger" />
+        <a class="btn btn-secondary" style="width:150px;" asp-action="Index">Back to List</a>
+    </form>
+</div>
