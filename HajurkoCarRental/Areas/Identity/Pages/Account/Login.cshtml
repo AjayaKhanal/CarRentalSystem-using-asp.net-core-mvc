@@ -9,59 +9,6 @@
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
 
-
-@*<div class="row">
-    <div class="col-md-4">
-    </div>
-    <div class="col-md-4">
-        <section>
-            <form class="card p-4" id="account" method="post">
-                <h2 class="text-center text-primary">Login to your account</h2>
-                <br />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-floating">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
-                    <label asp-for="Input.Email" class="form-label"></label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <br />
-                <div class="form-floating">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                    <label asp-for="Input.Password" class="form-label"></label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <br />
-                <div>
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe" class="form-label">
-                            <input class="form-check-input" asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                </div>
-                <br />
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                
-            </form>
-            <div class="text-center mt-3">
-                <p>
-                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                </p>
-                <p>
-                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                </p>
-                <p>
-                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                </p>
-            </div>
-        </section>
-    </div>
-    <div class="col-md-4">
-    </div>
-</div>*@
-
 <section class="bg-image"
          style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');height:100%;">
     <div class="container py-5 h-100">
@@ -94,16 +41,16 @@
                         </div>
 
                         <button class="btn btn-primary btn-lg btn-block w-100" id="login-submit" type="submit">Login</button>
-                        <div class="text-center mt-3 d-flex justify-content-between">
+                        <div class="text-center mt-3 d-flex flex-column justify-content-between">
                             <p>
                                 <a id="forgot-password" asp-page="./ForgotPassword">Forgot password?</a>
                             </p>
                             <p>
                                 <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Don't have an account? Register</a>
                             </p>
-@*                            <p>
+                            @* <p>
                                 <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                            </p>*@
+                            </p> *@
                         </div>
                     </form>
                 </div>
