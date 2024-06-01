@@ -108,9 +108,12 @@
                         {
                             @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
                             {
-                                <a asp-action="Edit" class="btn btn-primary" asp-route-id="@obj.Id"><i class="bi bi-pen"></i></a>
-                                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@obj.Id"><i class="bi bi-trash"></i></a>
+                                @if (obj.Paid == false)
+                                {
+                                    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@obj.Id"><i class="bi bi-pen"></i></a>
+                                    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@obj.Id"><i class="bi bi-trash"></i></a>
 
+                                }
                             }
                         }
                     </td>

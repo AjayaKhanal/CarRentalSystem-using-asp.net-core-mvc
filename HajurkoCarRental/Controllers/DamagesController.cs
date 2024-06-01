@@ -9,6 +9,7 @@ using HajurkoCarRental.Areas.Identity.Data;
 using HajurkoCarRental.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 
 namespace HajurkoCarRental.Controllers
 {
@@ -23,8 +24,10 @@ namespace HajurkoCarRental.Controllers
             _userManager = userManager;
         }
 
-        public class DamageInput {
-        
+        public class DamageInput
+        {
+
+            [Display(Name = "Car")]
             public int CarId { get; set; }
             public string? Description { get; set; }
 
@@ -40,7 +43,7 @@ namespace HajurkoCarRental.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-                if(currentUser.Role == "Customer")
+                if (currentUser.Role == "Customer")
                 {
                     hajurkoCarRentalDataContext = hajurkoCarRentalDataContext.Where(x => x.UserId == currentUser.Id).ToList();
 
@@ -69,9 +72,23 @@ namespace HajurkoCarRental.Controllers
         }
 
         // GET: Damages/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CarId"] = new SelectList(_context.Car, "Id", "Brand");
+            var DamagedCars = await _context.Damage.Where(i => i.Paid == false).ToListAsync();
+            if (DamagedCars.Count > 0)
+            {
+                ViewData["CarId"] = new SelectList(_context.Damage, "Id", "Brand");
+            }
+            else
+            {
+                // Create a SelectList with a single item for "No Damaged Cars"
+                var noCarsList = new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "No Damaged Cars", Value = "-1" }
+                };
+                ViewData["CarId"] = new SelectList(noCarsList, "Value", "Text");
+            }
+
             return View();
         }
 
@@ -89,6 +106,7 @@ namespace HajurkoCarRental.Controllers
 
                 var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
+                if (carDetails!=null) { 
                 Damage newDamage = new Damage();
                 newDamage.CarId = damage.CarId;
                 newDamage.Description = damage.Description;
@@ -102,6 +120,17 @@ namespace HajurkoCarRental.Controllers
                 _context.Add(newDamage);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Your damage form was submitted & we will update the repair cost soon which you need to pay!";
+                }
+                else
+                {
+                    try {
+                        TempData["error"] = "No car found";
+                    }
+                    catch(Exception e)
+                    {
+                        TempData["error"] = e.Data;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CarId"] = new SelectList(_context.Car, "Id", "Brand", damage.CarId);
@@ -184,7 +213,7 @@ namespace HajurkoCarRental.Controllers
             {
                 _context.Damage.Remove(damage);
             }
-            
+
             await _context.SaveChangesAsync();
             TempData["error"] = "Damage record was deleted successfully!";
             return RedirectToAction(nameof(Index));
@@ -193,7 +222,7 @@ namespace HajurkoCarRental.Controllers
         //check damage exists or not
         private bool DamageExists(int id)
         {
-          return (_context.Damage?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Damage?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         // GET: Damages/Payment/5

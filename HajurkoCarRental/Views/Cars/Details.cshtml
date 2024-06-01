@@ -65,8 +65,11 @@
                 <hr>
                 <div class="d-flex mt-3 justify-content-between">
                     <a class="btn btn-info" asp-controller="Cars" asp-action="Edit" asp-route-id="@Model.Id">Edit This Car</a>
-                    <a class="btn btn-danger" asp-controller="Cars" asp-action="Delete" asp-route-id="@Model.Id">Delete This Car</a>
-                </div>
+                    @if (UserManager.GetUserAsync(User).Result.Role == "Admin")
+                    {
+                        <a class="btn btn-danger" asp-controller="Cars" asp-action="Delete" asp-route-id="@Model.Id">Delete This Car</a>
+                    }
+                    </div>
             }
         }
 

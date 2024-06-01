@@ -106,7 +106,9 @@
                     </td>
 
                     <td>
+                        @if(!item.Approved && !item.Cancelled){
                         <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                        }
                         @if (UserManager.GetUserAsync(User).Result.Role == "Admin")
                         {
 

@@ -1,4 +1,8 @@
-﻿@model HajurkoCarRental.Controllers.RentalRequestsController.RentalRequestInput
+﻿@using HajurkoCarRental.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@model HajurkoCarRental.Controllers.RentalRequestsController.RentalRequestInput
+
+@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Create Rental Request";
@@ -12,8 +16,9 @@
             <div>
 
                 <h1 class="text-primary pb-2">
-                    Request Car Rental</h1>
-                    <hr />
+                    Request Car Rental
+                </h1>
+                <hr />
 
             </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -24,14 +29,14 @@
             <br />
             <div class="form-group">
                 <label asp-for="RequestDate" class="control-label"></label>
-                <input asp-for="RequestDate" class="form-control" />
+                <input type="date" asp-for="RequestDate" class="form-control" />
                 <span asp-validation-for="RequestDate" class="text-danger"></span>
             </div>
 
             <br />
             <div class="form-group">
                 <label asp-for="ReturnDate" class="control-label"></label>
-                <input asp-for="ReturnDate" class="form-control" />
+                <input type="date" asp-for="ReturnDate" class="form-control" />
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
 
@@ -81,7 +86,7 @@
                 <button type="submit" id="submitBtn" class="btn  btn-primary flex-grow-1">
                     Submit
                 </button>
-                <a class="btn btn-secondary btn-icon flex-grow-1" asp-action="Index">Back to List</a>
+                <a class="btn btn-secondary btn-icon flex-grow-1" asp-controller="Home" asp-action="Index">Back to List</a>
 
             </div>
         </form>
@@ -99,21 +104,20 @@
 
             $("#CarId").val(localStorage.getItem("selectedCar"));
         }
-        
+
         function inputRate() {
-            
+
             $.ajax({
                 url: '/Cars/GetData/' + $("#CarId").val() + "/",
                 type: 'GET',
                 success: function (result) {
-                    console.log(result);
                     var rate = result.rate;
                     var totalDays = Number.parseFloat($("#totalDays").text());
                     var amount = Number.parseInt(rate) * totalDays;
                     var discount = 0;
-                    $("#ratePerDay").text("Rs. " + rate );
+                    $("#ratePerDay").text("Rs. " + rate);
                     $("#totalDays").text(totalDays);
-                    $("#amount").text("Rs. "+ amount );
+                    $("#amount").text("Rs. " + amount);
 
                     if (result.isStaff == true) {
                         discount = amount * 25 / 100;
@@ -129,9 +133,9 @@
                         discount = 0;
                     }
 
-                    $("#discount").text("Rs. "+ discount );
+                    $("#discount").text("Rs. " + discount);
                     var totalAmount = amount - discount;
-                    $("#totalAmount").text("Rs. "+ totalAmount );
+                    $("#totalAmount").text("Rs. " + totalAmount);
                     $("#Charge").val(totalAmount.toFixed(1));
 
                     if (result.available == false) {
@@ -140,7 +144,7 @@
                     } else {
                         $("#submitBtn").removeClass("disabled");
                         $("#submitBtn").val("Create Request")
-                        console.log(result.pendingPayment);
+                        
                         if (result.pendingPayment == true) {
                             $("#submitBtn").addClass("disabled");
                             console.log($("#submitBtn").val());
@@ -149,7 +153,7 @@
                         } else {
                             $("#submitBtn").removeClass("disabled");
                             $("#submitBtn").text("Create Request")
-                            if (totalDays < 0) {
+                            if (totalDays < 1) {
                                 $("#submitBtn").addClass("disabled");
                                 $("#submitBtn").text("Return date should be after request date");
                             } else {
@@ -176,10 +180,14 @@
                 const date1 = new Date($("#RequestDate").val());
                 const date2 = new Date($(this).val());
 
+                if (date2 < date1) {
+                    $("#totalDays").text("0");
+                } else { 
                 const diffInMs = date2 - date1;
-                const diffInHours = (diffInMs / (1000 * 60 * 60)) / 24;
-
+                const diffInHours = ((diffInMs / (1000 * 60 * 60)) / 24)+1;
+                
                 $("#totalDays").text(diffInHours.toFixed(1));
+}
                 inputRate();
             }
 
@@ -190,11 +198,14 @@
             if ($("#ReturnDate").val() != "") {
                 const date1 = new Date($(this).val());
                 const date2 = new Date($("#ReturnDate").val());
-
+                if (date2 < date1) {
+                    $("#totalDays").text("0");
+                } else {
                 const diffInMs = date2 - date1;
-                const diffInHours = (diffInMs / (1000 * 60 * 60)) / 24;
-
+                const diffInHours = ((diffInMs / (1000 * 60 * 60)) / 24)+1;
+                
                 $("#totalDays").text(diffInHours.toFixed(1));
+ }
                 inputRate();
             }
 

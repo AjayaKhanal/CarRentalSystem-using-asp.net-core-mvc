@@ -65,8 +65,11 @@ namespace HajurkoCarRental.Controllers
         }
 
         // GET: CarReturns/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var Rentalrequests = await _context.RentalRequest.FirstOrDefaultAsync(i => i.Approved == true);
+            var Cars = await _context.Car.FirstOrDefaultAsync(i => i.IsAvailable == false);
+            
             ViewData["RentalRequestId"] = new SelectList(_context.RentalRequest, "Id", "Id");
             return View();
         }
