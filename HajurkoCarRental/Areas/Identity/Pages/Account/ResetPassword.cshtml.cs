@@ -98,8 +98,10 @@ namespace HajurkoCarRental.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                // Don't reveal that the user does not exist
-                return RedirectToPage("./ResetPasswordConfirmation");
+                // Reveal that the user does not exist
+                TempData["error"] = "User not found";
+                return RedirectToPage("./ResetPassword");
+                
             }
 
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
