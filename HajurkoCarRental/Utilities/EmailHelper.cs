@@ -8,6 +8,12 @@ namespace HajurkoCarRental.Utilities
     {
         public static async void SendEmail(String title, String body, List<string> emails)
         {
+            //var mail = "liar.t.imus56600@gmail.com";
+            //var pwd = "mzranmhhukeigxrn";
+            var mail = "ajayakhanal957@gmail.com";
+            var pwd = "ajaya@2060";
+
+            try { 
             // create an instance of SmtpClient
             using (SmtpClient client = new SmtpClient())
             {
@@ -16,11 +22,11 @@ namespace HajurkoCarRental.Utilities
                 client.Port = 587;
                 client.UseDefaultCredentials = false;
                 client.EnableSsl = true;
-                client.Credentials = new NetworkCredential("liar.t.imus56600@gmail.com", "mzranmhhukeigxrn");
+                client.Credentials = new NetworkCredential(mail, pwd);
 
                 // create a new MailMessage object
                 MailMessage message = new MailMessage();
-                message.From = new MailAddress("liar.t.imus56600@gmail.com");
+                message.From = new MailAddress(mail);
 
 				message.To.Add(string.Join(",", emails));
 
@@ -30,6 +36,10 @@ namespace HajurkoCarRental.Utilities
 
                 // send the email
                 await client.SendMailAsync(message);
+            }}
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
         }

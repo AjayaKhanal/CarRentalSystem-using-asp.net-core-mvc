@@ -111,6 +111,7 @@
                 url: '/Cars/GetData/' + $("#CarId").val() + "/",
                 type: 'GET',
                 success: function (result) {
+                    console.log(result);
                     var rate = result.rate;
                     var totalDays = Number.parseFloat($("#totalDays").text());
                     var amount = Number.parseInt(rate) * totalDays;

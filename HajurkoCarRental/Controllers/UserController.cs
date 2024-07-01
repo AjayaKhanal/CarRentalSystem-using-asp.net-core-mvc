@@ -23,7 +23,8 @@ namespace HajurkoCarRental.Controllers
         public UserController(HajurkoCarRentalDataContext db,
             UserManager<User> userManager,
             IUserStore<User> userStore,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager
+            )
         {
             _db = db;
             _userManager = userManager;

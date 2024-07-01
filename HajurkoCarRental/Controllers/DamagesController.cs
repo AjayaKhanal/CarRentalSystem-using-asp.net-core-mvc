@@ -13,6 +13,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HajurkoCarRental.Controllers
 {
+    public class CarDamaged
+    {
+        public int CarId { get; set; }
+        public string CarBrand { get; set; }
+    }
+
     public class DamagesController : Controller
     {
         private readonly HajurkoCarRentalDataContext _context;
@@ -74,10 +80,60 @@ namespace HajurkoCarRental.Controllers
         // GET: Damages/Create
         public async Task<IActionResult> Create()
         {
-            var DamagedCars = await _context.Damage.Where(i => i.Paid == false).ToListAsync();
-            if (DamagedCars.Count > 0)
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var DamagedCars = await _context.CarReturn.Where(i=>i.IsDamaged)
+                .Join(_context.RentalRequest,
+                carReturn => carReturn.RentalRequestId,
+                rentalRequest => rentalRequest.Id,
+                (carReturn, rentalRequest) => new CarDamaged
+                {
+                    CarId = rentalRequest.CarId,
+                    CarBrand = rentalRequest.Car.Brand
+                })
+                .ToListAsync();
+
+            //var DamagedCars = await _context.CarReturn.Where(i => i.IsDamaged == true).ToListAsync();
+
+            //var Cars = await _context.Car.ToListAsync();
+
+            //var DamagedList = new List<CarDamaged>();
+            //var DamageCar = new List<Car>();
+
+            //if (DamagedCars.Count > 0)
+            //{
+            //    foreach (var car in DamagedCars)
+            //    {
+            //        var RequestedCars = await _context.RentalRequest.Where(i => i.Id == car.RentalRequestId).ToListAsync();
+            //        if (RequestedCars.Count > 0)
+            //        {
+            //            foreach (var carid in RequestedCars)
+            //            {
+            //                DamageCar = Cars.Where(c => c.Id == carid.CarId).ToList();
+
+            //                //var DamageCar = Cars.Where(c => c.Id == car.RentalRequest.CarId).ToList();
+            //            }
+            //        }
+            //        if (DamageCar.Count > 0)
+            //        {
+            //            foreach (var car1 in DamageCar)
+            //            {
+            //                var Damaged = new CarDamaged
+            //                {
+            //                    CarId = car1.Id,
+            //                    CarBrand = car1.Brand
+            //                };
+            //                DamagedList.Add(Damaged);
+            //            }
+            //        }
+            //    }
+
+            //    ViewData["CarId"] = new SelectList(DamagedList, "CarId", "CarBrand");
+            //}
+
+            if(DamagedCars.Count > 0)
             {
-                ViewData["CarId"] = new SelectList(_context.Damage, "Id", "Brand");
+                ViewData["CarId"] = new SelectList(DamagedCars, "CarId", "CarBrand");
             }
             else
             {
@@ -106,29 +162,31 @@ namespace HajurkoCarRental.Controllers
 
                 var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-                if (carDetails!=null) { 
-                Damage newDamage = new Damage();
-                newDamage.CarId = damage.CarId;
-                newDamage.Description = damage.Description;
-                newDamage.User = currentUser;
-                newDamage.UserId = currentUser.Id;
-                newDamage.Car = carDetails;
-                newDamage.Paid = false;
-                newDamage.RepairCost = null;
+                if (carDetails != null)
+                {
+                    Damage newDamage = new Damage();
+                    newDamage.CarId = damage.CarId;
+                    newDamage.Description = damage.Description;
+                    newDamage.User = currentUser;
+                    newDamage.UserId = currentUser.Id;
+                    newDamage.Car = carDetails;
+                    newDamage.Paid = false;
+                    newDamage.RepairCost = null;
 
 
-                _context.Add(newDamage);
-                await _context.SaveChangesAsync();
-                TempData["success"] = "Your damage form was submitted & we will update the repair cost soon which you need to pay!";
+                    _context.Add(newDamage);
+                    await _context.SaveChangesAsync();
+                    TempData["success"] = "Your damage form was submitted & we will update the repair cost soon which you need to pay!";
                 }
                 else
                 {
-                    try {
+                    try
+                    {
                         TempData["error"] = "No car found";
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
-                        TempData["error"] = e.Data;
+                        TempData["error"] = e.Message;
                     }
                 }
                 return RedirectToAction(nameof(Index));
@@ -162,7 +220,6 @@ namespace HajurkoCarRental.Controllers
         public async Task<IActionResult> Edit(int id, DamageInput damage)
         {
 
-
             if (ModelState.IsValid)
             {
                 var damageObj = await _context.Damage.FirstOrDefaultAsync(m => m.Id == id);
@@ -171,15 +228,25 @@ namespace HajurkoCarRental.Controllers
 
                 _context.Update(damageObj);
                 TempData["success"] = "Damage form was edited successfully!";
+
+                if (damageObj.Paid == true)
+                {
+                    var carReturn = await _context.CarReturn.FirstOrDefaultAsync(cr => cr.RentalRequest.CarId == damageObj.CarId);
+                    if(carReturn!=null) {
+                        carReturn.IsDamaged = false;
+                        _context.Update(carReturn);
+                    };
+                    
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CarId"] = new SelectList(_context.Car, "Id", "Brand", damage.CarId);
+
             return View(damage);
         }
 
         // GET: Damages/Delete/5
-        [Authorize(Roles = "Staff, Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Damage == null)

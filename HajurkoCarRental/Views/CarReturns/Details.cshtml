@@ -33,7 +33,7 @@
                     @Html.DisplayNameFor(model => model.IsDamaged)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.IsDamaged)
+                    <input class="form-check-input" asp-for="IsDamaged" disabled/>
                 </dd>
             </div>
 
@@ -49,12 +49,12 @@
         </dl>
     </div>
     <div class="d-flex align-items-center gap-2">
-        <a class="btn btn-primary btn-icon flex-grow-1" asp-action="Edit" asp-route-id="@Model?.Id">
+        @* <a class="btn btn-primary btn-icon flex-grow-1" asp-action="Edit" asp-route-id="@Model?.Id">
             <span>
                 <i class="bi bi-pencil-square"></i>
             </span>
             <span>Edit</span>
-        </a>
+        </a> *@
         <a class="flex-grow-1 btn btn-secondary btn-icon" asp-action="Index">
             <span>
                 <i class="bi bi-backspace-fill"></i>

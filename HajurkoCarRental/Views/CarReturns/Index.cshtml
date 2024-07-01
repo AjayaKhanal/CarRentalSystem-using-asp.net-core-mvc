@@ -62,7 +62,7 @@
                         @Html.DisplayFor(modelItem => item.ReturnDate)
                     </td>
                     <td>
-                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pen"></i></a> &nbsp;&nbsp;
+                        @* <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pen"></i></a> &nbsp;&nbsp; *@
                         @if (UserManager.GetUserAsync(User).Result.Role != "Customer")
                         {
                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>

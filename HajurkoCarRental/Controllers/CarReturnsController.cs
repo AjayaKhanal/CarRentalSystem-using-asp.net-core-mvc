@@ -10,17 +10,26 @@ using HajurkoCarRental.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace HajurkoCarRental.Controllers
 {
+    public class CombinedViewModel
+    {
+        public int RentalRequestId { get; set; }
+        public string CarBrand { get; set; }
+    }
+
     //car controller
     public class CarReturnsController : Controller
     {
         private readonly HajurkoCarRentalDataContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CarReturnsController(HajurkoCarRentalDataContext context)
+        public CarReturnsController(HajurkoCarRentalDataContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public class CarReturnInput
@@ -67,10 +76,73 @@ namespace HajurkoCarRental.Controllers
         // GET: CarReturns/Create
         public async Task<IActionResult> Create()
         {
-            var Rentalrequests = await _context.RentalRequest.FirstOrDefaultAsync(i => i.Approved == true);
-            var Cars = await _context.Car.FirstOrDefaultAsync(i => i.IsAvailable == false);
-            
-            ViewData["RentalRequestId"] = new SelectList(_context.RentalRequest, "Id", "Id");
+            // Get the current logged-in user
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var Rentalrequests = await _context.RentalRequest.Where(rr=>rr.Approved && rr.UserId == user.Id)
+                .Join(_context.Car,
+                rental => rental.CarId,
+                car => car.Id,
+                (rental, car) => new CombinedViewModel
+                {
+                    CarBrand = car.Brand,
+                    RentalRequestId = rental.Id
+                })
+                .Where( joinedData => !_context.CarReturn.Any(
+                    cr=> cr.RentalRequestId == joinedData.RentalRequestId)
+                )
+                .ToListAsync();
+
+            //var Rentalrequests = await _context.RentalRequest.Where(i => i.Approved && i.UserId == user.Id).ToListAsync();
+            //var Cars = await _context.Car.Where(i => i.IsAvailable == false).ToListAsync();
+
+            //// Create a list of view models
+            //var viewModelList = new List<CombinedViewModel>();
+
+            //if (Rentalrequests.Count > 0)
+            //{
+            //    foreach (var request in Rentalrequests)
+            //    {
+            //        var rentedCar = Cars.Where(c => c.Id == request.CarId).ToList();
+            //        if (rentedCar.Count > 0)
+            //        {
+            //            var viewModel = new CombinedViewModel()
+            //            {
+            //                RentalRequestId = request.Id,
+            //                CarBrand = request.Car.Brand
+            //            };
+            //            viewModelList.Add(viewModel); // Add the view model to the list
+
+            //            ViewData["RentalRequestId"] = new SelectList(viewModelList, "RentalRequestId", "CarBrand");
+
+            //        }
+            //        else
+            //        {
+            //            // Create a SelectList with a single item for "No Cars to return"
+            //            var noCarsList = new List<SelectListItem>
+            //        {
+            //            new SelectListItem {Text = "No cars to returned", Value = "-1"}
+            //        };
+
+            //            ViewData["RentalRequestId"] = new SelectList(noCarsList, "Value", "Text");
+            //        }
+            //    }
+            //}
+
+            if(Rentalrequests.Count > 0)
+            {
+                ViewData["RentalRequestId"] = new SelectList(Rentalrequests, "RentalRequestId", "CarBrand");
+            }
+            else
+            {
+                // Create a SelectList with a single item for "No Cars to return"
+                var noCarsList = new List<SelectListItem>
+                    {
+                        new SelectListItem {Text = "No cars to returned", Value = "-1"}
+                    };
+
+                ViewData["RentalRequestId"] = new SelectList(noCarsList, "Value", "Text");
+            }
             return View();
         }
 
@@ -92,6 +164,7 @@ namespace HajurkoCarRental.Controllers
                 var rentalRequest = await _context.RentalRequest.FirstOrDefaultAsync(m => m.Id == carReturn.RentalRequestId);
                 var newCarReturn = new CarReturn();
 
+                if (rentalRequest !=null) {
                 newCarReturn.RentalRequest = rentalRequest;
                 newCarReturn.RentalRequestId = carReturn.RentalRequestId;
                 newCarReturn.FuelLevel = carReturn.FuelLevel;
@@ -108,10 +181,22 @@ namespace HajurkoCarRental.Controllers
                 await _context.SaveChangesAsync();
 
                 //success message
-                TempData["success"] = "New Rental record was created successfully!";
+                TempData["success"] = "New Return record was created successfully!";
+                
+                }
+                else
+                {
+                    try
+                    {
+                        TempData["error"] = "No car rented";
+                    }catch(Exception e)
+                    {
+                        TempData["error"] = e.Message;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RentalRequestId"] = new SelectList(_context.RentalRequest, "Id", "Id", carReturn.RentalRequestId);
+            //ViewData["RentalRequestId"] = new SelectList(_context.RentalRequest, "Id", "Id", carReturn.RentalRequestId);
             return View(carReturn);
         }
 
@@ -142,7 +227,7 @@ namespace HajurkoCarRental.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CarReturnInput carReturn)
         {
-            
+
             if (ModelState.IsValid)
             {
                 try
@@ -173,7 +258,6 @@ namespace HajurkoCarRental.Controllers
         }
 
         // GET: CarReturns/Delete/5
-        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.CarReturn == null)
@@ -213,7 +297,7 @@ namespace HajurkoCarRental.Controllers
 
         private bool CarReturnExists(int id)
         {
-          return (_context.CarReturn?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.CarReturn?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
